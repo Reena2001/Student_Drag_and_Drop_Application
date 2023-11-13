@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <title>Drag Drop Example</title>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Class A Students</h2>
+    <ul id="classAList" class="list-group">
+        <!-- Populate this list dynamically with PHP -->
+    <li class="sortable-item" data-id="1">Arun</li>
+    <li class="sortable-item" data-id="2">Uma</li>
+    <li class="sortable-item" data-id="3">Simon</li>
+    <li class="sortable-item" data-id="4">Rakesh</li>
+    <li class="sortable-item" data-id="5">Deepak</li>
+    </ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Fetch and display Class A students
+        $.get("get_students.php?class=Class A", function (data) {
+            $("#classAList").html(data);
+        });
+
+        // Enable drag-and-drop functionality
+        $("#classAList").sortable({
+            update: function (event, ui) {
+                // Get the updated order
+                var updatedOrder = [];
+                $("#classAList li").each(function (index) {
+                    updatedOrder.push({
+                        id: $(this).data('id'),
+                        sort_rank: index + 1
+                    });
+                });
+
+                // Update the server with the new order
+                $.ajax({
+                    type: "POST",
+                    url: "index.php",
+                    data: JSON.stringify(updatedOrder),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                });
+            },
+        });
+    });
+</script>
+
+</body>
+</html>
